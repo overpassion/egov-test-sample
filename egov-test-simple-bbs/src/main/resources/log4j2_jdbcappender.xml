@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+	<Appenders>
+		<Console name="console" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d %5p [%c] %m%n" />
+		</Console>
+		<JDBC name="db" tableName="db_log">
+			<!-- DB Connection을 제공해줄 클래스와 메서드명 정의 -->
+			<!-- JDBCAppender가 EgovConnectionFactory.getDatabaseConnection() 메서드를 
+				호출 -->
+			<!-- <ConnectionFactory
+				class="egovframework.rte.fdl.logging.db.EgovConnectionFactory"
+				method="getDatabaseConnection" /> -->
+			<ConnectionFactory 
+				class="egovframework.example.cmmn.ConnectionFactory"
+				method="getDatabaseConnection" />
+			<!-- log event가 insert될 컬럼 설정, insert될 값은 PatternLayout의 pattern 사용 -->
+			<Column name="eventDate" isEventTimestamp="true" />
+			<Column name="level" pattern="%p" />
+			<Column name="logger" pattern="%c" />
+			<Column name="message" pattern="%m" />
+			<Column name="exception" pattern="%ex{full}" />
+		</JDBC>
+		<RollingFile name="RollingFile">
+			<FileName>D:/TEMP/mylog.log</FileName>
+			<FilePattern>D:/TEMP/logtest/$${date:yyyy-MM}/%d{yyyy-MM-dd-hh-mm}.log.zip</FilePattern>
+			<PatternLayout>
+				<Pattern>%d{yyyy-MMM-dd HH:mm:ss a} [%t] %-5level %logger{36} - %msg%n</Pattern>
+			</PatternLayout>
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="2" modulate="true" />
+			</Policies>
+			<DefaultRolloverStrategy max="5" />
+		</RollingFile>
+	</Appenders>
+	<Loggers>
+		<Logger name="java.sql" level="DEBUG" additivity="false">
+			<AppenderRef ref="console" />
+			<AppenderRef ref="RollingFile" />
+		</Logger>
+		<Logger name="egovframework" level="DEBUG" additivity="false">
+			<AppenderRef ref="db" />
+			<AppenderRef ref="RollingFile" />
+		</Logger>
+		<!-- log SQL with timing information, post execution -->
+		<Logger name="jdbc.sqltiming" level="DEBUG" additivity="false">
+			<AppenderRef ref="console" />
+			<AppenderRef ref="RollingFile" />
+		</Logger>
+		<Logger name="org.springframework" level="DEBUG" additivity="false">
+			<AppenderRef ref="console" />
+			<AppenderRef ref="RollingFile" />
+		</Logger>
+		<Root level="DEBUG">
+			<AppenderRef ref="console" />
+			<AppenderRef ref="RollingFile" />
+		</Root>
+	</Loggers>
+</Configuration>

@@ -1,0 +1,19 @@
+{
+    "action": "CreateSubmissionRequest",
+        "appResource": "hdfs://masternode.local:9000/spark/app/SparkSample-0.0.1-SNAPSHOT.jar",
+        "clientSparkVersion": "2.3.3",
+        "appArgs": [ "hdfs://masternode.local:9000/spark/data/shakespeare.txt", "hdfs://masternode.local:9000/spark/output/result" ],
+    "environmentVariables" : {
+    "SPARK_ENV_LOADED" : "1"
+},
+    "mainClass": "test.WordCount",
+    "sparkProperties": {
+    "spark.jars": "hdfs://masternode.local:9000/spark/app/SparkSample-0.0.1-SNAPSHOT.jar",
+            "spark.driver.supervise":"false",
+            "spark.executor.memory": "512m",
+            "spark.driver.memory": "512m",
+            "spark.submit.deployMode":"cluster",
+            "spark.app.name": "SparkPi",
+            "spark.master": "spark://masternode.local:6066"
+    }
+}
